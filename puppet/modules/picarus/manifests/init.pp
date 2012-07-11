@@ -38,7 +38,7 @@ class picarus {
       path => ['/usr/local/bin', '/opt/local/bin', '/usr/bin', '/usr/sbin', '/bin', '/sbin'],
       unless => 'python -c "import cv2"',
       logoutput => true,
-      timeout => 1800
+      timeout => 3600
   }
 
   package {
