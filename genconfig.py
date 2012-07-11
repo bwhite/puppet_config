@@ -5,8 +5,9 @@ import glob
 
 
 def run(master, slaves):
-    root = 'puppet-%f' % time.time()
-    shutil.copytree('puppet', root)
+    root = 'puppet'
+    shutil.rmtree(root, ignore_errors=True)
+    shutil.copytree('puppet_src', root)
 
     for fn in glob.glob('%s/modules/hadoop/files/hadoop_conf/*' % root):
         with open(fn) as fp:
