@@ -1,0 +1,45 @@
+        s.stop(wait=True)
+        self.assertTrue(s._is_shutdown.isSet())
+
+        p = s.scheduler._store
+        s.scheduler._store = None
+        try:
+            s.scheduler.sync()
+        finally:
+            s.scheduler._store = p
+
+    def test_start_embedded_process(self):
+        s, sh = self.get_service()
+        s._is_shutdown.set()
+        s.start(embedded_process=True)
+
+    def test_start_thread(self):
+        s, sh = self.get_service()
+        s._is_shutdown.set()
+        s.start(embedded_process=False)
+
+    def test_start_tick_raises_exit_error(self):
+        s, sh = self.get_service()
+        s.scheduler.tick_raises_exit = True
+        s.start()
+        self.assertTrue(s._is_shutdown.isSet())
+
+    def test_start_manages_one_tick_before_shutdown(self):
+        s, sh = self.get_service()
+        s.scheduler.shutdown_service = s
+        s.start()
+        self.assertTrue(s._is_shutdown.isSet())
+
+
+class test_EmbeddedService(Case):
+
+    def test_start_stop_process(self):
+        try:
+            import _multiprocessing  # noqa
+        except ImportError:
+            raise SkipTest('multiprocessing not available')
+
+        from billiard.process import Process
+
+        s = beat.EmbeddedService()
+        self.assertIsI

@@ -1,0 +1,17 @@
+Puppet Notes
+http://docs.puppetlabs.com/puppet_core_types_cheatsheet.pdf
+
+Install Puppet (https://gist.github.com/7eb466a9e9168c10e3b4) (replace ln.dappervision.com with the server)
+bash puppet_setup.py
+
+To run the agent command manually run (replace puppet_server with the server)
+sudo puppet agent -t --server puppet_server --debug
+
+
+Debugging Tips
+- For certificate issues, the simplest solution is to
+1. Delete /etc/puppet/ssl on the clients and server
+2. Kill the puppet process on the server (sudo killall -9 puppet)
+3. Start the puppet server
+3. Run "sudo puppet cert list" on the server to remake its certificate
+4. Rerun the puppet agent command on the clients (they will be auto-signed)

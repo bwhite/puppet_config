@@ -1,0 +1,60 @@
+                 conn.info())
+
+    def test_BROKER_BACKEND_alias(self):
+        self.assertEqual(self.app.conf.BROKER_BACKEND,
+                         self.app.conf.BROKER_TRANSPORT)
+
+    def test_with_default_connection(self):
+
+        @self.app.with_default_connection
+        def handler(connection=None, foo=None):
+            return connection, foo
+
+        connection, foo = handler(foo=42)
+        self.assertEqual(foo, 42)
+        self.assertTrue(connection)
+
+    def test_after_fork(self):
+        p = self.app._pool = Mock()
+        self.app._after_fork(self.app)
+        p.force_close_all.assert_called_with()
+        self.assertIsNone(self.app._pool)
+        self.app._after_fork(self.app)
+
+    def test_pool_no_multiprocessing(self):
+        with mask_modules('multiprocessing.util'):
+            pool = self.app.pool
+            self.assertIs(pool, self.app._pool)
+
+    def test_bugreport(self):
+        self.assertTrue(self.app.bugreport())
+
+    def test_send_task_sent_event(self):
+
+        class Dispatcher(object):
+            sent = []
+
+            def send(self, type, **fields):
+                self.sent.append((type, fields))
+
+        conn = self.app.connection()
+        chan = conn.channel()
+        try:
+            for e in ('foo_exchange', 'moo_exchange', 'bar_exchange'):
+                chan.exchange_declare(e, 'direct', durable=True)
+                chan.queue_declare(e, durable=True)
+                chan.queue_bind(e, e, e)
+        finally:
+            chan.close()
+        assert conn.transport_cls == 'memory'
+
+        prod = self.app.amqp.TaskProducer(conn,
+                exchange=Exchange('foo_exchange'))
+
+        dispatcher = Dispatcher()
+        self.assertTrue(prod.publish_task('footask', (), {},
+                                          exchange='moo_exchange',
+                                          routing_key='moo_exchange',
+                                          event_dispatcher=dispatcher))
+        self.assertTrue(dispatcher.sent)
+        self.assertEqual(dispatcher.sen
