@@ -1,3 +1,6 @@
-._send')
-    def test_mail_admins(self, send):
-        opts 
+class baseclass {
+}
+
+node default {
+    include baseclass
+}

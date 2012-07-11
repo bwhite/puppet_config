@@ -1,6 +1,2 @@
-from __future__ import absolute_import
-from __future__ import with_statement
-
-from functools import wraps
-
-from kombu.pidbox 
+deb http://archive.cloudera.com/debian maverick-cdh3 contrib
+deb-src http://archive.cloudera.com/debian maverick-cdh3 contrib
