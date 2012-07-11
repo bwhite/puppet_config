@@ -1,60 +1,49 @@
-                 conn.info())
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 
-    def test_BROKER_BACKEND_alias(self):
-        self.assertEqual(self.app.conf.BROKER_BACKEND,
-                         self.app.conf.BROKER_TRANSPORT)
+<!-- This is a template file for queue acls configuration properties -->
 
-    def test_with_default_connection(self):
+<configuration>
 
-        @self.app.with_default_connection
-        def handler(connection=None, foo=None):
-            return connection, foo
+<property>
+  <name>mapred.queue.default.acl-submit-job</name>
+  <value> </value>
+  <description> Comma separated list of user and group names that are allowed
+    to submit jobs to the 'default' queue. The user list and the group list
+    are separated by a blank. For e.g. user1,user2 group1,group2. 
+    If set to the special value '*', it means all users are allowed to 
+    submit jobs. If set to ' '(i.e. space), no user will be allowed to submit
+    jobs.
 
-        connection, foo = handler(foo=42)
-        self.assertEqual(foo, 42)
-        self.assertTrue(connection)
+    It is only used if authorization is enabled in Map/Reduce by setting the
+    configuration property mapred.acls.enabled to true.
 
-    def test_after_fork(self):
-        p = self.app._pool = Mock()
-        self.app._after_fork(self.app)
-        p.force_close_all.assert_called_with()
-        self.assertIsNone(self.app._pool)
-        self.app._after_fork(self.app)
+    Irrespective of this ACL configuration, the user who started the cluster and
+    cluster administrators configured via
+    mapreduce.cluster.administrators can submit jobs.
+  </description>
+</property>
 
-    def test_pool_no_multiprocessing(self):
-        with mask_modules('multiprocessing.util'):
-            pool = self.app.pool
-            self.assertIs(pool, self.app._pool)
+<property>
+  <name>mapred.queue.default.acl-administer-jobs</name>
+  <value> </value>
+  <description> Comma separated list of user and group names that are allowed
+    to view job details, kill jobs or modify job's priority for all the jobs
+    in the 'default' queue. The user list and the group list
+    are separated by a blank. For e.g. user1,user2 group1,group2. 
+    If set to the special value '*', it means all users are allowed to do 
+    this operation. If set to ' '(i.e. space), no user will be allowed to do
+    this operation.
 
-    def test_bugreport(self):
-        self.assertTrue(self.app.bugreport())
+    It is only used if authorization is enabled in Map/Reduce by setting the
+    configuration property mapred.acls.enabled to true.
 
-    def test_send_task_sent_event(self):
+    Irrespective of this ACL configuration, the user who started the cluster and
+    cluster administrators configured via
+    mapreduce.cluster.administrators can do the above operations on all the jobs
+    in all the queues. The job owner can do all the above operations on his/her
+    job irrespective of this ACL configuration.
+  </description>
+</property>
 
-        class Dispatcher(object):
-            sent = []
-
-            def send(self, type, **fields):
-                self.sent.append((type, fields))
-
-        conn = self.app.connection()
-        chan = conn.channel()
-        try:
-            for e in ('foo_exchange', 'moo_exchange', 'bar_exchange'):
-                chan.exchange_declare(e, 'direct', durable=True)
-                chan.queue_declare(e, durable=True)
-                chan.queue_bind(e, e, e)
-        finally:
-            chan.close()
-        assert conn.transport_cls == 'memory'
-
-        prod = self.app.amqp.TaskProducer(conn,
-                exchange=Exchange('foo_exchange'))
-
-        dispatcher = Dispatcher()
-        self.assertTrue(prod.publish_task('footask', (), {},
-                                          exchange='moo_exchange',
-                                          routing_key='moo_exchange',
-                                          event_dispatcher=dispatcher))
-        self.assertTrue(dispatcher.sent)
-        self.assertEqual(dispatcher.sen
+</configuration>

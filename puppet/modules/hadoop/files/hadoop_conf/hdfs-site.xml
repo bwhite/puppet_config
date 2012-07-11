@@ -1,49 +1,46 @@
-ways_due = mocked_schedule(True, 1)
-always_pending = mocked_schedule(False, 1)
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 
+<configuration>
+  <property>
+    <name>dfs.replication</name>
+    <value>1</value>
+  </property>
+  <property>
+     <name>dfs.permissions</name>
+     <value>false</value>
+  </property>
+  <!-- Immediately exit safemode as soon as one DataNode checks in. 
+       On a multi-node cluster, these configurations must be removed.  -->
+  <property>
+    <name>dfs.safemode.extension</name>
+    <value>0</value>
+  </property>
+  <property>
+     <name>dfs.safemode.min.datanodes</name>
+     <value>1</value>
+  </property>
+  <property>
+     <!-- specify this so that running 'hadoop namenode -format' formats the right dir -->
+     <name>dfs.name.dir</name>
+     <value>/var/lib/hadoop-0.20/cache/hadoop/dfs/name</value>
+  </property>
 
-class test_Scheduler(Case):
-
-    def test_custom_schedule_dict(self):
-        custom = {'foo': 'bar'}
-        scheduler = mScheduler(schedule=custom, lazy=True)
-        self.assertIs(scheduler.data, custom)
-
-    def test_apply_async_uses_registered_task_instances(self):
-        through_task = [False]
-
-        class MockTask(Task):
-
-            @classmethod
-            def apply_async(cls, *args, **kwargs):
-                through_task[0] = True
-
-        assert MockTask.name in MockTask._get_app().tasks
-
-        scheduler = mScheduler()
-        scheduler.apply_async(scheduler.Entry(task=MockTask.name))
-        self.assertTrue(through_task[0])
-
-    def test_apply_async_should_not_sync(self):
-
-        @task()
-        def not_sync():
-            pass
-        not_sync.apply_async = Mock()
-
-        s = mScheduler()
-        s._do_sync = Mock()
-        s.should_sync = Mock()
-        s.should_sync.return_value = True
-        s.apply_async(s.Entry(task=not_sync.name))
-        s._do_sync.assert_called_with()
-
-        s._do_sync = Mock()
-        s.should_sync.return_value = False
-        s.apply_async(s.Entry(task=not_sync.name))
-        self.assertFalse(s._do_sync.called)
-
-    @patch('celery.app.base.Celery.send_task')
-    def test_send_task(self, send_task):
-        b = beat.Scheduler()
-        b.se
+  <!-- Enable Hue Plugins -->
+  <property>
+    <name>dfs.namenode.plugins</name>
+    <value>org.apache.hadoop.thriftfs.NamenodePlugin</value>
+    <description>Comma-separated list of namenode plug-ins to be activated.
+    </description>
+  </property>
+  <property>
+    <name>dfs.datanode.plugins</name>
+    <value>org.apache.hadoop.thriftfs.DatanodePlugin</value>
+    <description>Comma-separated list of datanode plug-ins to be activated.
+    </description>
+  </property>
+  <property>
+    <name>dfs.thrift.address</name>
+    <value>0.0.0.0:10090</value>
+  </property>
+</configuration>
