@@ -15,6 +15,7 @@ cd puppet-2.7.14
 ruby1.8 install.rb
 # Try to connect to the puppet master, since the server is new it will
 # give the master a request to sign its certificate.  I have to manually OK the cert.  After that you can use puppet_run.sh
+mkdir -p /etc/puppet
 echo "[main]" > /etc/puppet/puppet.conf
 echo "certname = " `ifconfig $1 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}' | head -n 1` >> /etc/puppet/puppet.conf
 echo "server = {{master}}" >> /etc/puppet/puppet.conf
