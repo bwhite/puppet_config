@@ -30,6 +30,14 @@ def run(master, slaves):
         print('Writing[%s]' % fn)
         with open(fn, 'w') as fp:
             fp.write(data)
+    fn = '%s/puppet.conf' % root
+    with open(fn) as fp:
+        data = fp.read()
+        data = data.replace('{{master}}', "%s" % master)
+        print('Writing[%s]' % fn)
+        with open(fn, 'w') as fp:
+            fp.write(data)
+
     
 
 if __name__ == "__main__":
