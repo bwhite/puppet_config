@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+  <property>
+    <name>fs.default.name</name>
+    <value>hdfs://bespin00.umiacs.umd.edu:8020</value>
+  </property>
+
+  <property>
+     <name>hadoop.tmp.dir</name>
+     <value>/tmp/${user.name}</value>
+  </property>
+
+<property>                                                                       
+<name>hadoop.socks.server</name>
+<value>localhost:6789</value>
+</property>
+
+<property>
+<name>hadoop.rpc.socket.factory.class.default</name>
+<value>org.apache.hadoop.net.SocksSocketFactory</value>
+</property>
+
+<property>
+<name>hadoop.job.ugi</name>
+<value>brandyn,supergroup</value>
+</property>   
+
+<property>
+  <name>hadoop.proxyuser.brandyn.hosts</name>
+  <value>*</value>
+</property>
+
+<property>
+  <name>hadoop.proxyuser.brandyn.groups</name>
+  <value>*</value>
+</property>
+</configuration>
+

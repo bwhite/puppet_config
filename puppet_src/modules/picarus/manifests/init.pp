@@ -23,10 +23,20 @@ class picarus_pre {
           ensure => "0.10.1",
           provider => pip,
           require => Package["numpy"];
+      "bottle":
+          ensure => latest,
+          provider => pip;
       "scikit-learn":
           ensure => "0.11",
           provider => pip,
           require => Package["numpy", "scipy"];
+  }
+  exec {'wget --no-check-certificate https://github.com/downloads/libevent/libevent/libevent-2.0.16-stable.tar.gz && tar -xzf libevent-2.0.16-stable.tar.gz && cd libevent-2.0.16-stable && ./configure --prefix=/usr/ && make && make install':
+      path => ['/usr/local/bin', '/opt/local/bin', '/usr/bin', '/usr/sbin', '/bin', '/sbin'],
+      creates => "/usr/lib/libevent.so",
+      #unless => '',
+      logoutput => true,
+      timeout => 3600
   }
 }
 
@@ -34,7 +44,7 @@ class picarus_pre {
 class picarus {
   $b = "git+https://github.com/bwhite/"
 
-  exec {'wget http://downloads.sourceforge.net/project/opencvlibrary/opencv-unix/2.4.2/OpenCV-2.4.2.tar.bz2 && tar -xjf OpenCV-2.4.2.tar.bz2 && mkdir OpenCV-2.4.2/build && cd OpenCV-2.4.2/build && cmake -D BUILD_TESTS=OFF -D BUILD_PERF_TESTS=OFF .. && make -j4 && make install':
+  exec {'wget http://downloads.sourceforge.net/project/opencvlibrary/opencv-unix/2.4.2/OpenCV-2.4.2.tar.bz2 && tar -xjf OpenCV-2.4.2.tar.bz2 && mkdir OpenCV-2.4.2/build && cd OpenCV-2.4.2/build && cmake -D BUILD_TESTS=OFF -D BUILD_PERF_TESTS=OFF -D CMAKE_INSTALL_PREFIX=/usr .. && make -j8 && make install':
       path => ['/usr/local/bin', '/opt/local/bin', '/usr/bin', '/usr/sbin', '/bin', '/sbin'],
       unless => 'python -c "import cv2"',
       logoutput => true,
@@ -42,6 +52,9 @@ class picarus {
   }
 
   package {
+      "gevent":
+          ensure => latest,
+          provider => pip;
       "image_server":
           ensure => latest,     
           provider => pip,

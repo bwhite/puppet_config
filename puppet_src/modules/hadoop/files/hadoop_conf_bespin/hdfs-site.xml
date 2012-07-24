@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+  <property>
+    <name>dfs.replication</name>
+    <value>3</value>
+  </property>
+  <property>
+     <name>dfs.permissions</name>
+     <value>true</value>
+  </property>
+  <property>
+     <name>fs.trash.interval</name>
+     <value>3600</value>
+  </property>
+  <property>
+     <!-- specify this so that running 'hadoop namenode -format' formats the right dir -->
+     <name>dfs.name.dir</name>
+     <value>/var/lib/hadoop-0.20/cache/hadoop/dfs/name</value>
+  </property>
+  <property>
+	<name>dfs.data.dir</name>
+	<value>/scratch0/hadoop-data,/scratch1/hadoop-data,/scratch2/hadoop-data</value>
+	<final>true</final>
+  </property>
+  <property>
+	<name>dfs.block.size</name>
+	<value>134217728</value>
+  </property>
+  <property>
+	<name>dfs.datanode.max.xcievers</name>
+	<value>4096</value>
+  </property>
+</configuration>

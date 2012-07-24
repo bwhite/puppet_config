@@ -1,0 +1,1 @@
+proxychains lynx http://192.168.79.49:50030/

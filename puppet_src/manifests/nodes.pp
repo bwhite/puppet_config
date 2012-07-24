@@ -27,7 +27,8 @@ node {{master}} {
   class {hadoop: stage => b0}
   class {pip_install: stage => b1}
   class {picarus: stage => a0}
-  class {picarus_pre: stage => main}
+  class {picarus_pre: stage => b1}
+  class {install_java_apt: stage => main}
   class {install_java: stage => a0}
   class {hadoop_master: stage => a1}
   class {hadoop_base: stage => a1}
@@ -47,6 +48,7 @@ node {{slaves}} {
   class {pip_install: stage => b1}
   class {picarus: stage => a0}
   class {picarus_pre: stage => main}
+  class {install_java_apt: stage => b1}
   class {install_java: stage => a0}
   class {hadoop_slave: stage => a1}
   class {hadoop_base: stage => a1}
