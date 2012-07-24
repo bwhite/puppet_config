@@ -14,7 +14,7 @@ class hadoop {
 
 class install_java_apt {
     exec { "install_java":
-        command => "apt-get update && curl https://raw.github.com/bwhite/oab-java6/master/oab-java.sh > /root/oab-java.sh && NO_IMVIRT=1 bash /root/oab-java.sh && apt-get update",
+        command => "apt-get update && curl https://raw.github.com/flexiondotorg/oab-java6/master/oab-java.sh > /root/oab-java.sh && bash /root/oab-java.sh && apt-get update",
         path => "/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin",
         creates => "/root/oab-java.sh",
         timeout => 600
