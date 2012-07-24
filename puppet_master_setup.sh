@@ -1,5 +1,7 @@
 #!/bin/bash
 # install necessary packages
+cp /etc/apt/sources.list /etc/apt/sources.list.bak
+cat /etc/apt/sources.list.bak | sed 's/#deb/deb/g' > /etc/apt/sources.list
 apt-get update
 apt-get install -y libopenssl-ruby rdoc libopenssl-ruby1.8 libreadline-ruby1.8 libruby1.8 rdoc1.8 ruby1.8
 # Install facter (used by puppet to determine system config)
