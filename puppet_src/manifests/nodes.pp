@@ -1,5 +1,5 @@
 class standard_install {
-  $pkgs = [ "libavcodec-dev", "libswscale-dev", "libavformat-dev", "gfortran", "ffmpeg", "libfftw3-dev", "python-dev", "build-essential", "git-core", "cmake", "libjpeg62-dev", "libpng12-dev", "libblas-dev", "liblapack-dev", "libevent-dev", "emacs23-nox", "dtach", "curl", "python-pip", "python-setuptools" , "lynx"]
+  $pkgs = [ "libavcodec-dev", "libswscale-dev", "libavformat-dev", "gfortran", "ffmpeg", "libfftw3-dev", "python-dev", "build-essential", "git-core", "cmake", "libjpeg62-dev", "libpng12-dev", "libblas-dev", "liblapack-dev", "emacs23-nox", "dtach", "curl", "python-pip", "python-setuptools" , "lynx"]
   package { $pkgs: ensure => "installed" }
 }
 

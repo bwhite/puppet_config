@@ -44,7 +44,7 @@ class picarus_pre {
 class picarus {
   $b = "git+https://github.com/bwhite/"
 
-  exec {'wget http://downloads.sourceforge.net/project/opencvlibrary/opencv-unix/2.4.2/OpenCV-2.4.2.tar.bz2 && tar -xjf OpenCV-2.4.2.tar.bz2 && mkdir OpenCV-2.4.2/build && cd OpenCV-2.4.2/build && cmake -D BUILD_TESTS=OFF -D BUILD_PERF_TESTS=OFF -D CMAKE_INSTALL_PREFIX=/usr .. && make -j8 && make install':
+  exec {'wget http://downloads.sourceforge.net/project/opencvlibrary/opencv-unix/2.4.2/OpenCV-2.4.2.tar.bz2 && tar -xjf OpenCV-2.4.2.tar.bz2 && mkdir OpenCV-2.4.2/build && cd OpenCV-2.4.2/build && cmake -D BUILD_TESTS=OFF -D BUILD_PERF_TESTS=OFF -D CMAKE_INSTALL_PREFIX=/usr .. && make && make install':
       path => ['/usr/local/bin', '/opt/local/bin', '/usr/bin', '/usr/sbin', '/bin', '/sbin'],
       unless => 'python -c "import cv2"',
       logoutput => true,
