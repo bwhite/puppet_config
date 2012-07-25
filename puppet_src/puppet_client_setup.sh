@@ -21,4 +21,4 @@ mkdir -p /etc/puppet
 echo "[main]" > /etc/puppet/puppet.conf
 echo "certname = " `ifconfig $1 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}' | head -n 1` >> /etc/puppet/puppet.conf
 echo "server = {{pmaster}}" >> /etc/puppet/puppet.conf
-puppet agent -t --debug
+puppet agent --onetime --verbose --ignorecache --no-daemonize --no-usecacheonfailure --no-splay
