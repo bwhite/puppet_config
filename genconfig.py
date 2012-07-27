@@ -26,20 +26,14 @@ def run(master, slaves, pmaster):
         print('Writing[%s]' % fn)
         with open(fn, 'w') as fp:
             fp.write(data)
-    fn = '%s/puppet_client_setup.sh' % root
-    with open(fn) as fp:
-        data = fp.read()
-        data = data.replace('{{master}}', "%s" % master).replace('{{pmaster}}', "%s" % pmaster)
-        print('Writing[%s]' % fn)
-        with open(fn, 'w') as fp:
-            fp.write(data)
-    fn = '%s/puppet.conf' % root
-    with open(fn) as fp:
-        data = fp.read()
-        data = data.replace('{{master}}', "%s" % master).replace('{{pmaster}}', "%s" % pmaster)
-        print('Writing[%s]' % fn)
-        with open(fn, 'w') as fp:
-            fp.write(data)
+
+    for fn in ['%s/puppet_client_setup.sh' % root, '%s/puppet.conf' % root, '%s/modules/cron_20min/manifests/init.pp' % root]:
+        with open(fn) as fp:
+            data = fp.read()
+            data = data.replace('{{master}}', "%s" % master).replace('{{pmaster}}', "%s" % pmaster)
+            print('Writing[%s]' % fn)
+            with open(fn, 'w') as fp:
+                fp.write(data)
 
 
 if __name__ == "__main__":

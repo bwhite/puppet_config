@@ -14,6 +14,12 @@ class pip_install {
   }
 }
 
+class root_dir_readable {
+  exec {'chmod 755 /root':
+      path => ['/usr/local/bin', '/opt/local/bin', '/usr/bin', '/usr/sbin', '/bin', '/sbin'],
+      logoutput => true,
+  }
+}
 
 # Hadoop Master
 # Also need to update
@@ -24,6 +30,7 @@ node {{master}} {
   stage { [b0, b1, a0, a1, a2, a3]:}
   Stage[b0] -> Stage[b1] -> Stage[main] -> Stage[a0] -> Stage[a1] -> Stage[a2] -> Stage[a3]
   class {standard_install: stage => b0}
+  class {root_dir_readable: stage => b0}
   class {hadoop: stage => b0}
   class {pip_install: stage => b1}
   class {picarus: stage => a0}
@@ -34,6 +41,7 @@ node {{master}} {
   class {hadoop_base: stage => a1}
   class {hadoop_master_format: stage => a2}
   class {hadoop_master_start: stage => a3}
+  class {zeromq: stage => a3}
   class {cron_20min: stage => a3}
 }
 
@@ -44,6 +52,7 @@ node {{slaves}} {
   stage { [b0, b1, a0, a1, a2, a3]:}
   Stage[b0] -> Stage[b1] -> Stage[main] -> Stage[a0] -> Stage[a1] -> Stage[a2] -> Stage[a3]
   class {standard_install: stage => b0}
+  class {root_dir_readable: stage => b0}
   class {hadoop: stage => b0}
   class {pip_install: stage => b1}
   class {picarus: stage => a0}
@@ -53,5 +62,6 @@ node {{slaves}} {
   class {hadoop_slave: stage => a1}
   class {hadoop_base: stage => a1}
   class {hadoop_slave_start: stage => a3}
+  class {zeromq: stage => a3}
   class {cron_20min: stage => a3}
 }
