@@ -92,3 +92,12 @@ class hadoop_master_start {
     enable => "true",
   }
 }
+
+class install_thrift {
+  exec {'proxychains':
+      command => 'wget -nc https://dist.apache.org/repos/dist/release/thrift/0.8.0/thrift-0.8.0.tar.gz && tar -xzf thrift-0.8.0.tar.gz && cd thrift-0.8.0 && ./configure --prefix /usr && make && make install',
+      path => ['/usr/local/bin', '/opt/local/bin', '/usr/bin', '/usr/sbin', '/bin', '/sbin'],
+      unless => 'which thrift',
+      logoutput => true,
+  }
+}

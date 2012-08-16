@@ -1,5 +1,5 @@
 class standard_install {
-  $pkgs = [ "libavcodec-dev", "libswscale-dev", "libavformat-dev", "gfortran", "ffmpeg", "libfftw3-dev", "python-dev", "build-essential", "git-core", "cmake", "libjpeg62-dev", "libpng12-dev", "libblas-dev", "liblapack-dev", "emacs23-nox", "dtach", "curl", "python-pip", "python-setuptools" , "lynx"]
+  $pkgs = [ "libavcodec-dev", "libswscale-dev", "libavformat-dev", "gfortran", "ffmpeg", "libfftw3-dev", "python-dev", "build-essential", "git-core", "cmake", "libjpeg62-dev", "libpng12-dev", "libblas-dev", "liblapack-dev", "emacs23-nox", "dtach", "curl", "python-pip", "python-setuptools" , "lynx", "wine", "libboost-all-dev", "libssl-dev"]
   package { $pkgs: ensure => "installed" }
 }
 
@@ -37,6 +37,7 @@ node {{master}} {
   class {picarus_pre: stage => main}
   class {install_java_apt: stage => b1}
   class {install_java: stage => a0}
+  class {install_thrift: stage => a0}
   class {hadoop_master: stage => a1}
   class {hadoop_base: stage => a1}
   class {hadoop_master_format: stage => a2}
