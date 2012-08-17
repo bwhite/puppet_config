@@ -15,6 +15,7 @@ wget -N http://downloads.puppetlabs.com/puppet/puppet-2.7.14.tar.gz
 tar -xzf puppet-2.7.14.tar.gz
 cd puppet-2.7.14
 ruby1.8 install.rb
+cd ..
 # Try to connect to the puppet master, since the server is new it will
 # give the master a request to sign its certificate.  I have to manually OK the cert.  After that you can use puppet_run.sh
 mkdir -p /etc/puppet

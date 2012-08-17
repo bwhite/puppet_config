@@ -15,3 +15,4 @@ wget -N http://downloads.puppetlabs.com/puppet/puppet-2.7.14.tar.gz
 tar -xzf puppet-2.7.14.tar.gz
 cd puppet-2.7.14
 ruby1.8 install.rb
+cd ..
