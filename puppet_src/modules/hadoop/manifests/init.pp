@@ -42,9 +42,11 @@ class hadoop_psuedo {
 }
 
 class hadoop_base {
-  $hadoop_pkgs = ["hadoop-0.20", "hadoop-hbase", "hadoop-zookeeper", "hadoop-0.20-native", "hadoop-hbase-thrift"]
-  package { $hadoop_pkgs: ensure => "installed",
-  }
+ $hadoop_pkgs = $lsbdistcodename ? {
+          precise => ["hadoop-0.20", "hadoop-hbase", "hadoop-zookeeper", "hadoop-hbase-thrift"],
+          default => ["hadoop-0.20", "hadoop-hbase", "hadoop-zookeeper", "hadoop-0.20-native", "hadoop-hbase-thrift"],
+        }
+  package { $hadoop_pkgs: ensure => "installed",}
 }
 
 class hadoop_slave {
@@ -68,7 +70,7 @@ class hadoop_slave_start {
 }
 
 class hadoop_master {
-  $hadoop_pkgs = ["hadoop-0.20-tasktracker", "hadoop-0.20-datanode", "hadoop-0.20-jobtracker", "hadoop-0.20-namenode", "hadoop-0.20-secondarynamenode"]
+  $hadoop_pkgs = ["hadoop-0.20-tasktracker", "hadoop-0.20-datanode", "hadoop-0.20-jobtracker", "hadoop-0.20-namenode", "hadoop-0.20-secondarynamenode", "hadoop-hbase-master"]
   package { $hadoop_pkgs: ensure => "installed",
   }
 
@@ -87,17 +89,29 @@ class hadoop_master {
 }
 
 class hadoop_master_start {
-  service { ["hadoop-0.20-datanode", "hadoop-0.20-namenode", "hadoop-0.20-tasktracker", "hadoop-0.20-jobtracker", "hadoop-0.20-secondarynamenode"]:
+  service { ["hadoop-0.20-datanode", "hadoop-0.20-namenode", "hadoop-0.20-tasktracker", "hadoop-0.20-jobtracker", "hadoop-0.20-secondarynamenode", "hadoop-hbase-master", "hadoop-hbase-thrift"]:
     ensure => "running",
     enable => "true",
   }
 }
 
 class install_thrift {
-  exec {'proxychains':
+  exec {'thrift':
       command => 'wget -nc https://dist.apache.org/repos/dist/release/thrift/0.8.0/thrift-0.8.0.tar.gz && tar -xzf thrift-0.8.0.tar.gz && cd thrift-0.8.0 && ./configure --prefix /usr && make && make install',
       path => ['/usr/local/bin', '/opt/local/bin', '/usr/bin', '/usr/sbin', '/bin', '/sbin'],
       unless => 'which thrift',
       logoutput => true,
+      timeout => 6000
+  }
+}
+
+class build_hadoopy_hbase {
+  exec {'build hadoopy hbase':
+      cwd => '/root/src/hadoopy-hbase/java/',
+      command => 'bash build.sh',
+      path => ['/usr/local/bin', '/opt/local/bin', '/usr/bin', '/usr/sbin', '/bin', '/sbin'],
+      unless => 'test -e /usr/lib/hadoop/lib/hadoopy_hbase.jar',
+      logoutput => true,
+      timeout => 6000
   }
 }
