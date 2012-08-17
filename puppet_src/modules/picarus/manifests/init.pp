@@ -38,6 +38,12 @@ class picarus_pre {
       logoutput => true,
       timeout => 3600
   }
+   file { "/root/test_all.sh":
+        owner => root,
+        group => root,
+        mode => 775,
+        source => "puppet:///picarus/test_all.sh"
+    }
 }
 
 
