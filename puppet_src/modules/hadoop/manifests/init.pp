@@ -69,8 +69,8 @@ class hadoop_slave_start {
   }
 }
 
-class hadoop_master {
-  $hadoop_pkgs = ["hadoop-0.20-tasktracker", "hadoop-0.20-datanode", "hadoop-0.20-jobtracker", "hadoop-0.20-namenode", "hadoop-0.20-secondarynamenode", "hadoop-hbase-master"]
+class hadoop_master($hadoop_master, $hadoop_slaves) {
+  $hadoop_pkgs = ["hadoop-0.20-tasktracker", "hadoop-0.20-datanode", "hadoop-0.20-jobtracker", "hadoop-0.20-namenode", "hadoop-0.20-secondarynamenode", "hadoop-hbase-master", "hadoop-hbase-regionserver"]
   package { $hadoop_pkgs: ensure => "installed",
   }
 
@@ -80,12 +80,54 @@ class hadoop_master {
     recurse => true,
     purge => true
   }
-    exec { "create_hdfs_path":
+  exec { "create_hdfs_path":
         command => "mkdir -p /var/lib/hadoop-0.20/cache/hadoop/dfs && chown hdfs:hdfs -R /var/lib/hadoop-0.20/cache/hadoop/dfs",
         path => "/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin",
         creates => "/var/lib/hadoop-0.20/cache/hadoop/dfs"
-    }
+  }
 
+  file { "/etc/hosts":
+      owner   => root,
+      group   => root,
+      mode    => 644,
+      content => template("hadoop/hosts.erb"),
+  }
+
+  file { "/etc/hadoop/conf/mapred-site.xml":
+      owner   => root,
+      group   => root,
+      mode    => 644,
+      content => template("hadoop/mapred-site.xml.erb"),
+  }
+
+  file { "/etc/hadoop/conf/core-site.xml":
+      owner   => root,
+      group   => root,
+      mode    => 644,
+      content => template("hadoop/core-site.xml.erb"),
+  }
+
+  file { "/etc/hadoop/conf/masters":
+      owner   => root,
+      group   => root,
+      mode    => 644,
+      content => template("hadoop/masters.erb"),
+  }
+
+  file { "/etc/hadoop/conf/slaves":
+      owner   => root,
+      group   => root,
+      mode    => 644,
+      content => template("hadoop/slaves.erb"),
+  }
+
+
+  file { "/etc/hbase/conf/hbase-site.xml":
+      owner   => root,
+      group   => root,
+      mode    => 644,
+      content => template("hadoop/hbase-site.xml.erb"),
+  }
 }
 
 class hadoop_master_start {
@@ -93,6 +135,12 @@ class hadoop_master_start {
     ensure => "running",
     enable => "true",
   }
+
+  service { ["hadoop-hbase-regionserver"]:
+    ensure => "stopped",
+    enable => "false",
+  }
+ 
 }
 
 class install_thrift {

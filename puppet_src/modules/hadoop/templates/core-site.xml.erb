@@ -4,12 +4,17 @@
 <configuration>
   <property>
     <name>fs.default.name</name>
-    <value>hdfs://{{master}}:8020</value>
+    <value>hdfs://hadoopnameserver:8020</value>
   </property>
 
   <property>
      <name>hadoop.tmp.dir</name>
      <value>/var/lib/hadoop-0.20/cache/${user.name}</value>
+  </property>
+
+  <property>
+    <name>dfs.replication</name>
+    <value>1</value>
   </property>
 
   <!-- OOZIE proxy user setting -->

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 # install necessary packages
 #cp /etc/apt/sources.list /etc/apt/sources.list.bak
 #cat /etc/apt/sources.list.bak | sed 's/#deb/deb/g' > /etc/apt/sources.list
@@ -22,4 +23,5 @@ mkdir -p /etc/puppet
 echo "[main]" > /etc/puppet/puppet.conf
 echo "certname = " `ifconfig $1 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}' | head -n 1` >> /etc/puppet/puppet.conf
 echo "server = {{pmaster}}" >> /etc/puppet/puppet.conf
+echo "masterport = 8080" >> /etc/puppet/puppet.conf
 puppet agent --onetime --verbose --ignorecache --no-daemonize --no-usecacheonfailure --no-splay

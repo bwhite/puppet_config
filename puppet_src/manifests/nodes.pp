@@ -28,14 +28,26 @@ class root_dir_readable {
   }
 }
 
+class msfonts {
+  exec { "accept-msttcorefonts-license":
+         command => '/bin/sh -c "echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections"'
+  }
+
+  package { "msttcorefonts":
+            ensure  => installed,
+            require => Exec['accept-msttcorefonts-license']
+  }
+}
+
 # Hadoop Master
 # Also need to update
 # /etc/puppet/modules/hadoop/files/hadoop_conf/masters
 # /etc/puppet/modules/hadoop/files/hadoop_conf/core-site.xml
 # /etc/puppet/modules/hadoop/files/hadoop_conf/mapred-site.xml
-node {{master}} {
-  stage { [b0, b1, a0, a1, a2, a3, a4]:}
-  Stage[b0] -> Stage[b1] -> Stage[main] -> Stage[a0] -> Stage[a1] -> Stage[a2] -> Stage[a3] -> Stage[a4]
+node {{masters}} {
+  stage { [c0, c1, b0, b1, a0, a1, a2, a3, a4]:}
+  Stage[c0] -> Stage[c1] -> Stage[b0] -> Stage[b1] -> Stage[main] -> Stage[a0] -> Stage[a1] -> Stage[a2] -> Stage[a3] -> Stage[a4]
+  class {msfonts: stage => c1}
   class {standard_install: stage => b0}
   class {root_dir_readable: stage => b0}
   class {hadoop: stage => b0}
@@ -46,7 +58,11 @@ node {{master}} {
   class {install_java_apt: stage => b1}
   class {install_java: stage => a0}
   class {install_thrift: stage => a0}
-  class {hadoop_master: stage => a1}
+  class {hadoop_master:
+         stage => a1,
+         hadoop_master => $ipaddress,
+         hadoop_slaves => [],
+  }
   class {hadoop_base: stage => a1}
   class {hadoop_master_format: stage => a2}
   class {hadoop_master_start: stage => a3}

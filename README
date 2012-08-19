@@ -14,3 +14,10 @@ Debugging Tips
 3. Start the puppet server
 3. Run "sudo puppet cert list" on the server to remake its certificate
 4. Rerun the puppet agent command on the clients (they will be auto-signed)
+
+
+Tested on
+Linode 10.04 (must use 2.6 kernel because of entropy issue)
+Linode 11.04 64x (must use 2.6 kernel because of entropy issue)
+Linode 11.10 64x
+Linode 12.04 64x

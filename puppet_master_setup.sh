@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 # install necessary packages
 #cp /etc/apt/sources.list /etc/apt/sources.list.bak
 #cat /etc/apt/sources.list.bak | sed 's/#deb/deb/g' > /etc/apt/sources.list
